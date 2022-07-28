@@ -5,44 +5,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class FileDeleteUtil {
 	private Path foundFile;
-	
-	public String removeFileFromPath(String filecode) throws IOException {
+	public String removeFileFromPath(String fileName) throws IOException  {
 		 
-		
-		 Path dirPath = Paths.get("Files-Upload");
+		foundFile = null;
+		Path dirPath = Paths.get("Files-Upload");
 		  
 	        Files.list(dirPath).forEach(file -> {
-	            if (file.getFileName().toString().startsWith(filecode)) {
-	            	 try {
+	            if (file.getFileName().toString().endsWith(fileName)) {
+	            	 
+					try {
 	            		foundFile = file;
 						Files.delete(file);
-						
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            	 
-	                return;
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+	                return ;
 	            }
-	            
-	        }
-	        
-	        		);
+	        });
 	 
-	        if (foundFile == null) {
-	            return "file not found";
+	        if (foundFile != null) {
+	            return "Delete successful";
 	        }
-			return "Y";       
-	                 
-	       
+	        return "File not found";
 	}
 
-	
 }
