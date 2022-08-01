@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,9 @@ public class FileDeleteController {
     
 	@Autowired
 	FileDeleteUtil deleteUtil ;
-	@GetMapping("delete/{fileName}")
+
+	@CrossOrigin
+	@DeleteMapping("/delete/{fileName}")
 	public String deleteFile(@PathVariable("fileName") String fileName) {
 		String resp = null;
 		
