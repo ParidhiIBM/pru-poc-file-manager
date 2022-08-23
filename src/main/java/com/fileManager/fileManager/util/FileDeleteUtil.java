@@ -17,7 +17,9 @@ public class FileDeleteUtil {
 		Path dirPath = Paths.get("Files-Upload");
 		  
 	        Files.list(dirPath).forEach(file -> {
-	            if (file.getFileName().toString().endsWith(fileName)) {
+				String fullFileName = file.getFileName().toString();
+				String docName = fullFileName.substring(fullFileName.indexOf('-')+1);
+	            if (docName.equals(fileName)) {
 	            	 
 					try {
 	            		foundFile = file;
