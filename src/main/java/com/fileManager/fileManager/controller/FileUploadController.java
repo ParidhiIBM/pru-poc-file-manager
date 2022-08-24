@@ -1,5 +1,6 @@
 package com.fileManager.fileManager.controller;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class FileUploadController {
     @GetMapping
     public List<ResponseFile> list() {
         return fileService.getAllFiles()
-                          .stream()
+                          .stream().sorted(Comparator.comparing(FileEntity::getName))
                           .map(this::mapToFileResponse)
                           .collect(Collectors.toList());
     }
