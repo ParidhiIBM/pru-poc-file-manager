@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +22,15 @@ public class FileService {
     public FileService(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
     }
-
+    
+    @Transactional
     public void save(MultipartFile file) throws IOException {
-        FileEntity fileEntity = new FileEntity();
+    	
+    	FileEntity fileEntity = getIfFileExist(StringUtils.cleanPath(file.getOriginalFilename()));
+		if(fileEntity==null) {
+			fileEntity = new FileEntity();
+		}
+		
         fileEntity.setName(StringUtils.cleanPath(file.getOriginalFilename()));
         fileEntity.setContentType(file.getContentType());
         fileEntity.setData(file.getBytes());
@@ -43,4 +50,12 @@ public class FileService {
     public void remove(String id){
         fileRepository.deleteById(id);
     }
+    
+    private FileEntity getIfFileExist(String name) {
+    	Optional<FileEntity> favorites = fileRepository.findAllByName(name).stream().findAny();
+		if(favorites.isPresent()) {
+			return favorites.get();
+		}
+		return null;
+	}
 }
