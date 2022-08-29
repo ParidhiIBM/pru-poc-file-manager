@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fileManager.fileManager.model.FileEntity;
+import com.fileManager.fileManager.response.DocumentTypeResponse;
 import com.fileManager.fileManager.response.ResponseFile;
 import com.fileManager.fileManager.services.FileService;
 
@@ -38,9 +41,9 @@ public class FileUploadController {
     }
 
     @PostMapping
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file, @RequestParam("document_type") String document_type) {
         try {
-            fileService.save(file);
+            fileService.saveDocument(file, document_type);
 
             return ResponseEntity.status(HttpStatus.OK)
                                  .body(String.format("File uploaded successfully: %s", file.getOriginalFilename()));
@@ -70,7 +73,9 @@ public class FileUploadController {
         fileResponse.setSize(fileEntity.getSize());
         fileResponse.setUrl(downloadURL);
 		fileResponse.setDeleted(fileEntity.isDeleted());
-
+		ModelMapper modelMapper = new ModelMapper();
+		DocumentTypeResponse documentTypeResponse = modelMapper.map(fileEntity.getDocumentType(), DocumentTypeResponse.class);
+		fileResponse.setDocumentType(documentTypeResponse);
         return fileResponse;
     }
 

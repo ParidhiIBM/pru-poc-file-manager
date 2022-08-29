@@ -1,9 +1,14 @@
 package com.fileManager.fileManager.model;
 
+import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -31,6 +36,12 @@ public class FileEntity {
 
     @Lob
     private byte[] data;
+    
+    @OneToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "document_type", referencedColumnName = "id")
+    private DocumentTypeEntity documentType;
+    
+    private Date lastUpdatedDate;
 
     public String getId() {
         return id;
@@ -79,4 +90,22 @@ public class FileEntity {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+	public DocumentTypeEntity getDocumentType() {
+		return documentType;
+	}
+
+	public void setDocumentType(DocumentTypeEntity documentType) {
+		this.documentType = documentType;
+	}
+
+	public Date getLastUpdatedDate() {
+		return lastUpdatedDate;
+	}
+
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
+		this.lastUpdatedDate = lastUpdatedDate;
+	}
+	
+    
 }
