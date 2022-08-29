@@ -8,6 +8,7 @@ public class ResponseFile {
     private String url;
     private String contentType;
 	private boolean deleted;
+	private DocumentTypeResponse documentType;
 
     public boolean isDeleted() {
 		return deleted;
@@ -56,4 +57,13 @@ public class ResponseFile {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
+
+	public DocumentTypeResponse getDocumentType() {
+		return documentType;
+	}
+
+	public void setDocumentType(DocumentTypeResponse documentType) {
+		this.documentType = documentType;
+	}
+        
 }
