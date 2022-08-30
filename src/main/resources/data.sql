@@ -1,0 +1,10 @@
+INSERT INTO document_type(id, name) VALUES (1, 'Select');
+INSERT INTO document_type(id, name) VALUES (2, 'BEEKEEPER');
+INSERT INTO document_type(id, name) VALUES (3, 'Checkpoint Goals');
+INSERT INTO document_type(id, name) VALUES (4, 'Day-1 - Non_Disclosure');
+INSERT INTO document_type(id, name) VALUES (5, 'Day-1 - Skills Tracker');
+INSERT INTO document_type(id, name) VALUES (6, 'Email Confirmation');
+INSERT INTO document_type(id, name) VALUES (7, 'On boarding Checklist');
+INSERT INTO document_type(id, name) VALUES (8, 'Prudential Delivery - Digital KT Plan');
+INSERT INTO document_type(id, name) VALUES (9, 'Prudential New colleague');
+INSERT INTO document_type(id, name) VALUES (10, 'Training');
