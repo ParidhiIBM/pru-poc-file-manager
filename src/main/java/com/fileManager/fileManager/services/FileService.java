@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fileManager.fileManager.model.DocumentTypeEntity;
 import com.fileManager.fileManager.model.FileEntity;
 import com.fileManager.fileManager.repositories.FileRepository;
+import com.fileManager.fileManager.util.FileDownloadUtil;
 
 @Service
 public class FileService {
@@ -22,6 +25,9 @@ public class FileService {
     
     @Autowired
     private DocumentService documentService;
+    
+    @Autowired
+	FileDownloadUtil downloadUtil;
 
     @Autowired
     public FileService(FileRepository fileRepository) {
@@ -31,10 +37,7 @@ public class FileService {
     @Transactional
     public void save(MultipartFile file) throws IOException {
     	
-    	FileEntity fileEntity = getIfFileExist(StringUtils.cleanPath(file.getOriginalFilename()));
-		if(fileEntity==null) {
-			fileEntity = new FileEntity();
-		}
+    	FileEntity fileEntity = new FileEntity();
 		
         fileEntity.setName(StringUtils.cleanPath(file.getOriginalFilename()));
         fileEntity.setContentType(file.getContentType());
@@ -45,9 +48,9 @@ public class FileService {
     }
     
     @Transactional
-    public void saveDocument(MultipartFile file, String documentTypeId) throws IOException {
+    public void saveDocument(MultipartFile file, String documentTypeId, String employeeId) throws IOException {
     	
-    	FileEntity fileEntity = getIfFileExist(StringUtils.cleanPath(file.getOriginalFilename()));
+    	FileEntity fileEntity = getIfFileExist(StringUtils.cleanPath(file.getOriginalFilename()), employeeId, documentTypeId);
 		if(fileEntity==null) {
 			fileEntity = new FileEntity();
 		}
@@ -61,6 +64,7 @@ public class FileService {
         if(documentType!=null) {
         	fileEntity.setDocumentType(documentType);
         }
+        fileEntity.setEmployeeId(employeeId);
         fileEntity.setLastUpdatedDate(new Date());
 
         fileRepository.save(fileEntity);
@@ -73,16 +77,40 @@ public class FileService {
     public List<FileEntity> getAllFiles() {
         return fileRepository.findAll();
     }
+    
+    @Transactional
+    public List<FileEntity> getAllFilesByEmpId(String employeeId) {
+        return fileRepository.findAllByEmployeeId(employeeId);
+    }
+    
+    @Transactional
+    public List<FileEntity> getAllSampleFiles() {
+    	DocumentTypeEntity documentType = documentService.getDocumentTypeByName("Sample Documents");
+    	List<FileEntity> files = fileRepository.findAllByDocumentType(documentType); 
+        return files;
+    }
 
     public void remove(String id){
         fileRepository.deleteById(id);
     }
     
-    private FileEntity getIfFileExist(String name) {
-    	Optional<FileEntity> favorites = fileRepository.findAllByName(name).stream().findAny();
+    private FileEntity getIfFileExist(String name, String employeeId, String documentTypeId) {
+    	DocumentTypeEntity documentType = new DocumentTypeEntity();
+    	documentType.setId(Integer.parseInt(documentTypeId));
+    	Optional<FileEntity> favorites = fileRepository.findAllByNameAndEmployeeIdAndDocumentType(name, employeeId, documentType).stream().findAny();
 		if(favorites.isPresent()) {
 			return favorites.get();
 		}
 		return null;
 	}
+    
+    @Transactional
+    public void downloadSampleDocsInZip(HttpServletResponse response) {
+        List<FileEntity> fileNames = getAllSampleFiles();
+
+        System.out.println("############# file size ###########" + fileNames.size());
+
+       downloadUtil.downloadInZip(response, fileNames, "SampleDocuments");
+	}
+
 }

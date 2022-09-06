@@ -2,6 +2,8 @@ package com.fileManager.fileManager.controller;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fileManager.fileManager.services.FileService;
 import com.fileManager.fileManager.util.FileDownloadUtil;
 
 @CrossOrigin
@@ -21,6 +24,10 @@ public class FileDownloadController {
     
 	@Autowired
 	FileDownloadUtil downloadUtil ;
+	
+	@Autowired
+	private FileService fileService;
+	
 	@GetMapping("downloadFile/{fileCode}")
 	public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String filecode) {
 		Resource resource = null;
@@ -39,6 +46,11 @@ public class FileDownloadController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(resource); 
+	}
+	
+	@GetMapping("files/sampledoc/zip")
+	public void downloadSampleDocsInZip(HttpServletResponse response) {
+		fileService.downloadSampleDocsInZip(response);
 	}
 
 }

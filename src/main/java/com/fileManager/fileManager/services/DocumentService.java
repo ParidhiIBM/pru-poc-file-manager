@@ -19,6 +19,14 @@ public class DocumentService {
         return documentRepository.findAll();
     }
 	
+	public DocumentTypeEntity getDocumentTypeByName(String name) {
+		Optional<DocumentTypeEntity> option = documentRepository.findAllByName(name);
+		if(option.isPresent()) {
+			return option.get();
+		}
+		return null;
+    }
+	
 	public DocumentTypeEntity getDocumentTypeById(Integer id) {
 		Optional<DocumentTypeEntity> option = documentRepository.findById(id);
 		if(option.isPresent()) {
