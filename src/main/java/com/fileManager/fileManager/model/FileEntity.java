@@ -33,6 +33,8 @@ public class FileEntity {
     private Long size;
 
     private boolean deleted = Boolean.FALSE;
+    
+    private String employeeId;
 
     @Lob
     private byte[] data;
@@ -105,6 +107,14 @@ public class FileEntity {
 
 	public void setLastUpdatedDate(Date lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 	}
 	
     
