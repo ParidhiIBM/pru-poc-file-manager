@@ -50,7 +50,7 @@ public class FileService {
     @Transactional
     public void saveDocument(MultipartFile file, String documentTypeId, String employeeId) throws IOException {
     	
-    	FileEntity fileEntity = getIfFileExist(StringUtils.cleanPath(file.getOriginalFilename()), employeeId, documentTypeId);
+    	FileEntity fileEntity = getIfFileExist(employeeId, documentTypeId);
 		if(fileEntity==null) {
 			fileEntity = new FileEntity();
 		}
@@ -94,10 +94,10 @@ public class FileService {
         fileRepository.deleteById(id);
     }
     
-    private FileEntity getIfFileExist(String name, String employeeId, String documentTypeId) {
+    private FileEntity getIfFileExist(String employeeId, String documentTypeId) {
     	DocumentTypeEntity documentType = new DocumentTypeEntity();
     	documentType.setId(Integer.parseInt(documentTypeId));
-    	Optional<FileEntity> favorites = fileRepository.findAllByNameAndEmployeeIdAndDocumentType(name, employeeId, documentType).stream().findAny();
+    	Optional<FileEntity> favorites = fileRepository.findAllByEmployeeIdAndDocumentType(employeeId, documentType).stream().findAny();
 		if(favorites.isPresent()) {
 			return favorites.get();
 		}

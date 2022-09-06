@@ -16,6 +16,8 @@ public interface FileRepository extends JpaRepository<FileEntity, String> {
 	
 	public List<FileEntity> findAllByNameAndEmployeeIdAndDocumentType(final String name, final String employeeId, final DocumentTypeEntity documentType);
 	
+	public List<FileEntity> findAllByEmployeeIdAndDocumentType(final String employeeId, final DocumentTypeEntity documentType);
+	
 	public List<FileEntity> findAllByDocumentType(final DocumentTypeEntity documentType);
 	
 	public List<FileEntity> findAllByEmployeeId(final String employeeId);

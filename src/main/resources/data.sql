@@ -1,3 +1,4 @@
+INSERT INTO document_type(id, name) VALUES (0, 'Sample Documents');
 INSERT INTO document_type(id, name) VALUES (1, 'Select');
 INSERT INTO document_type(id, name) VALUES (2, 'BEEKEEPER');
 INSERT INTO document_type(id, name) VALUES (3, 'Checkpoint Goals');
