@@ -15,8 +15,14 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "FILES")
+//@Builder
+@NoArgsConstructor
 @SQLDelete(sql = "UPDATE FILES SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 public class FileEntity {
@@ -44,7 +50,20 @@ public class FileEntity {
     private DocumentTypeEntity documentType;
     
     private Date lastUpdatedDate;
-
+    
+    public FileEntity(String name, String contentType, Long size, boolean deleted, String employeeId, byte[] data,
+			DocumentTypeEntity documentType, Date lastUpdatedDate) {
+		super();
+		this.name = name;
+		this.contentType = contentType;
+		this.size = size;
+		this.deleted = deleted;
+		this.employeeId = employeeId;
+		this.data = data;
+		this.documentType = documentType;
+		this.lastUpdatedDate = lastUpdatedDate;
+	}
+    
     public String getId() {
         return id;
     }
@@ -116,6 +135,11 @@ public class FileEntity {
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
-	
-    
+
+	@Override
+	public String toString() {
+		return "FileEntity [id=" + id + ", name=" + name + ", deleted=" + deleted + ", employeeId=" + employeeId
+				+ ", documentType=" + documentType + ", lastUpdatedDate=" + lastUpdatedDate + "]";
+	}
+
 }

@@ -3,16 +3,33 @@ package com.fileManager.fileManager.model;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "DOCUMENT_TYPE")
+//@Builder
+//@AllArgsConstructor
+@NoArgsConstructor
 public class DocumentTypeEntity implements Comparable<DocumentTypeEntity>{
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+
+    public DocumentTypeEntity(Integer id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+    
 	public Integer getId() {
 		return id;
 	}
@@ -48,6 +65,9 @@ public class DocumentTypeEntity implements Comparable<DocumentTypeEntity>{
 		}
 		return getName().compareTo(obj.getName());
 	}
-	
 
+	@Override
+	public String toString() {
+		return "DocumentTypeEntity [id=" + id + ", name=" + name + "]";
+	}
 }

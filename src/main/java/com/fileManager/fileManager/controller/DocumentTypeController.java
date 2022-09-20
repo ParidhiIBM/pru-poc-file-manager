@@ -1,5 +1,6 @@
 package com.fileManager.fileManager.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +24,20 @@ public class DocumentTypeController {
 	private DocumentService documentService;
 	
 	@GetMapping
-    public List<DocumentTypeResponse> list() {
-        List<DocumentTypeEntity> documentTypeEntities =  documentService.getAllDocumentTypes();
+	public List<DocumentTypeResponse> getAllDocumentTypesForAssociates() {
+		List<DocumentTypeEntity> documentTypeEntities = new ArrayList<>();
+		documentTypeEntities = documentService.getAllDocumentTypesForAssociates();
+
+		ModelMapper modelMapper = new ModelMapper();
+		List<DocumentTypeResponse> resultList = documentTypeEntities.stream()
+				.map(obj -> modelMapper.map(obj, DocumentTypeResponse.class)).collect(Collectors.toList());
+		return resultList;
+	}
+	
+	@GetMapping("/sample")
+    public List<DocumentTypeResponse> getSampleDocumentTypes() {
+		List<DocumentTypeEntity> documentTypeEntities =  documentService.getSampleDocumentTypes();
+		
         ModelMapper modelMapper = new ModelMapper(); 
         List<DocumentTypeResponse> resultList = documentTypeEntities.stream().map(obj -> modelMapper.map(obj, DocumentTypeResponse.class))
                 .collect(Collectors.toList());

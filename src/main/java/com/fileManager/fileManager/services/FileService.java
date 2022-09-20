@@ -21,7 +21,7 @@ import com.fileManager.fileManager.util.FileDownloadUtil;
 @Service
 public class FileService {
 
-    private final FileRepository fileRepository;
+    //private final FileRepository fileRepository;
     
     @Autowired
     private DocumentService documentService;
@@ -30,9 +30,12 @@ public class FileService {
 	FileDownloadUtil downloadUtil;
 
     @Autowired
-    public FileService(FileRepository fileRepository) {
-        this.fileRepository = fileRepository;
-    }
+    private FileRepository fileRepository;
+    
+	/*
+	 * @Autowired public FileService(FileRepository fileRepository) {
+	 * this.fileRepository = fileRepository; }
+	 */
     
     @Transactional
     public void save(MultipartFile file) throws IOException {
@@ -50,7 +53,13 @@ public class FileService {
     @Transactional
     public void saveDocument(MultipartFile file, String documentTypeId, String employeeId) throws IOException {
     	
-    	FileEntity fileEntity = getIfFileExist(employeeId, documentTypeId);
+    	FileEntity fileEntity = null;
+    	if(documentTypeId.equals("0")) {
+    		fileEntity = getIfFileExist(StringUtils.cleanPath(file.getOriginalFilename()), employeeId, documentTypeId); 
+    	} else {
+    		fileEntity = getIfFileExist(employeeId, documentTypeId);
+    	}
+    			
 		if(fileEntity==null) {
 			fileEntity = new FileEntity();
 		}
@@ -98,6 +107,16 @@ public class FileService {
     	DocumentTypeEntity documentType = new DocumentTypeEntity();
     	documentType.setId(Integer.parseInt(documentTypeId));
     	Optional<FileEntity> favorites = fileRepository.findAllByEmployeeIdAndDocumentType(employeeId, documentType).stream().findAny();
+		if(favorites.isPresent()) {
+			return favorites.get();
+		}
+		return null;
+	}
+    
+    private FileEntity getIfFileExist(String fileName, String employeeId, String documentTypeId) {
+    	DocumentTypeEntity documentType = new DocumentTypeEntity();
+    	documentType.setId(Integer.parseInt(documentTypeId));
+    	Optional<FileEntity> favorites = fileRepository.findAllByNameAndEmployeeIdAndDocumentType(fileName, employeeId, documentType).stream().findAny();
 		if(favorites.isPresent()) {
 			return favorites.get();
 		}
