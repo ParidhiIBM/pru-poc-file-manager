@@ -1,11 +1,14 @@
 package com.fileManager.fileManager.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
@@ -15,17 +18,16 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "FILES")
+@Inheritance( strategy = InheritanceType.TABLE_PER_CLASS )
 //@Builder
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE FILES SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
-public class FileEntity {
+public class FileEntity implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -40,7 +42,7 @@ public class FileEntity {
 
     private boolean deleted = Boolean.FALSE;
     
-    private String employeeId;
+	private String employeeId; 
 
     @Lob
     private byte[] data;
@@ -51,7 +53,7 @@ public class FileEntity {
     
     private Date lastUpdatedDate;
     
-    public FileEntity(String name, String contentType, Long size, boolean deleted, String employeeId, byte[] data,
+	public FileEntity(String name, String contentType, Long size, boolean deleted, String employeeId, byte[] data,
 			DocumentTypeEntity documentType, Date lastUpdatedDate) {
 		super();
 		this.name = name;
@@ -138,7 +140,8 @@ public class FileEntity {
 
 	@Override
 	public String toString() {
-		return "FileEntity [id=" + id + ", name=" + name + ", deleted=" + deleted + ", employeeId=" + employeeId
+		return "FileEntity [id=" + id + ", name=" + name + ", deleted="
+				+ deleted /* + ", employeeId=" + employeeId */
 				+ ", documentType=" + documentType + ", lastUpdatedDate=" + lastUpdatedDate + "]";
 	}
 

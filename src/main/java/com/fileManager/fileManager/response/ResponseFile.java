@@ -9,6 +9,9 @@ public class ResponseFile {
     private String contentType;
 	private boolean deleted;
 	private DocumentTypeResponse documentType;
+	private String employeeId;
+	private String reviewerId;
+	private boolean isReviewed;
 
     public boolean isDeleted() {
 		return deleted;
@@ -65,5 +68,29 @@ public class ResponseFile {
 	public void setDocumentType(DocumentTypeResponse documentType) {
 		this.documentType = documentType;
 	}
-        
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getReviewerId() {
+		return reviewerId;
+	}
+
+	public void setReviewerId(String reviewerId) {
+		this.reviewerId = reviewerId;
+	}
+
+	public boolean isReviewed() {
+		return isReviewed;
+	}
+
+	public void setReviewed(boolean isReviewed) {
+		this.isReviewed = isReviewed;
+	}
+	    
 }
