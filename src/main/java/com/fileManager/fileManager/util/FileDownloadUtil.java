@@ -16,6 +16,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
+import com.fileManager.fileManager.model.DocumentAssociate;
 import com.fileManager.fileManager.model.FileEntity;
 
 @Service
@@ -40,7 +41,7 @@ public class FileDownloadUtil {
 	        return null;
 	}
 	
-	public void downloadInZip(HttpServletResponse response, List<FileEntity> fileNames, String filename) {
+	public void downloadInZip(HttpServletResponse response, List<DocumentAssociate> fileNames, String filename) {
 		response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment; filename=" + filename + ".zip");
 		
@@ -63,6 +64,33 @@ public class FileDownloadUtil {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+	}
+
+	public byte[] downloadDocsInZip(HttpServletResponse response, List<DocumentAssociate> fileNames, String fileName) {
+		byte[] bytes = null;
+		response.setContentType("application/zip");
+		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		
+		try (ZipOutputStream zippedOut = new ZipOutputStream(response.getOutputStream())) {
+			for (FileEntity file : fileNames) {
+                ByteArrayResource resource = new ByteArrayResource(file.getData());
+
+                ZipEntry e = new ZipEntry(file.getName());
+                // Configure the zip entry, the properties of the file
+                e.setSize(resource.contentLength());
+                e.setTime(System.currentTimeMillis());
+                // etc.
+                zippedOut.putNextEntry(e);
+                // And the content of the resource:
+                StreamUtils.copy(resource.getInputStream(), zippedOut);
+                zippedOut.closeEntry();
+            }
+            bytes = zippedOut.toString().getBytes();
+            zippedOut.finish();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+		return bytes;
 	}
 
 	

@@ -52,5 +52,16 @@ public class FileDownloadController {
 	public void downloadSampleDocsInZip(HttpServletResponse response) {
 		fileService.downloadSampleDocsInZip(response);
 	}
+	
+	@GetMapping("files/reviewer/{reviewerId}/employee/{employeeId}/zip")
+	public ResponseEntity<byte[]> getFile(@PathVariable("reviewerId") String reviewerId,
+			@PathVariable("employeeId") String employeeId, HttpServletResponse response) {
 
+		String fileName = "Onboarding_" + employeeId + ".zip";
+		byte[] bytes = fileService.downloadDocsForAssociate(response, reviewerId, employeeId, fileName);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+				.contentType(MediaType.valueOf("application/zip")).body(bytes);
+	}
+	
 }
