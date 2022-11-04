@@ -1,17 +1,15 @@
 package com.fileManager.fileManager.controller;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fileManager.fileManager.services.FileService;
-import com.fileManager.fileManager.util.FileDeleteUtil;
 
 @CrossOrigin
 @RestController
@@ -24,6 +22,7 @@ public class FileDeleteController {
 		this.fileService = fileService;
 	}
 
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@DeleteMapping("/files/delete/{id}")
 	public ResponseEntity<String> removeOne(@PathVariable("id") String id) {
 		try {

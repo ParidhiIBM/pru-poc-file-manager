@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class DocumentTypeController {
 	@Autowired
 	private DocumentService documentService;
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping
 	public List<DocumentTypeResponse> getAllDocumentTypesForAssociates() {
 		List<DocumentTypeEntity> documentTypeEntities = new ArrayList<>();
@@ -34,6 +36,7 @@ public class DocumentTypeController {
 		return resultList;
 	}
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping("/sample")
     public List<DocumentTypeResponse> getSampleDocumentTypes() {
 		List<DocumentTypeEntity> documentTypeEntities =  documentService.getSampleDocumentTypes();

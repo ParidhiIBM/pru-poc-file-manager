@@ -1,0 +1,63 @@
+server:
+  port: 9003
+
+
+spring:
+  application:
+    name: FILEMANAGER-SERVICE
+  config:
+        activate:
+            on-profile: dev
+  datasource:
+    url: jdbc:postgresql://10.5.0.14:5432/postgres
+    username: postgres
+    password: admin
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+    
+      
+    
+logging:
+  file.name: C:/Users/002TCO744/Desktop/elk-logs/skill-service.log
+  
+eureka:
+  instance:
+    hostname: ${vcap.application.uris[0]:10.5.0.5}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 20
+  client:
+    serviceUrl:
+      defaultZone: http://10.5.0.5:8761/eureka
+
+#department:
+#  service:
+#    url: http://DEPARTMENT-SERVICE
+
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url: 
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    hostname: localhost
+   
+  

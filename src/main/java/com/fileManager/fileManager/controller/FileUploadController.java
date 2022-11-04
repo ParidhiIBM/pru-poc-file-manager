@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class FileUploadController {
 	@Autowired
 	private FileService fileService;
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@PostMapping()
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("data") String data) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
@@ -49,31 +51,37 @@ public class FileUploadController {
 		}
 	}
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping
 	public List<ResponseFile> list() {
 		return fileService.getAllFiles();
 	}
 
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping("/sampledoc")
 	public List<ResponseFile> getSampleDocuments() {
 		return fileService.getAllSampleFiles();
 	}
 
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping("/employee/{employeeId}")
 	public List<ResponseFile> listByEmployeeId(@PathVariable("employeeId") String employeeId) {
 		return fileService.getAllFilesByEmpId(employeeId);
 	}
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping("/reviewer/{reviewerId}/employee/{employeeId}")
 	public List<ResponseFile> listByReviewerIdAndEmployeeId(@PathVariable("reviewerId") String reviewerId, @PathVariable("employeeId") String employeeId) {
 		return fileService.getAllFilesByReviewerAndEmployee(reviewerId, employeeId);
 	}
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@PutMapping("/reviewer/{reviewerId}/employee/{employeeId}")
 	public void updatedReviewedStatus(@PathVariable("reviewerId") String reviewerId, @PathVariable("employeeId") String employeeId) {
 		fileService.updatedReviewedStatus(reviewerId, employeeId);
 	}
 	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping("{id}")
 	public ResponseEntity<byte[]> getFile(@PathVariable String id) {
 		Optional<FileEntity> fileEntityOptional = fileService.getFile(id);
