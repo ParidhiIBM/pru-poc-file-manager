@@ -37,15 +37,15 @@ spring:
 logging:
   file.name: C:/Users/002TCO744/Desktop/elk-logs/skill-service.log
   
-eureka:
-  instance:
-    hostname: ${vcap.application.uris[0]:10.5.0.5}
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 20
-  client:
-    serviceUrl:
-      defaultZone: http://10.5.0.5:8761/eureka
+#eureka:
+#  instance:
+#    hostname: ${vcap.application.uris[0]:10.5.0.5}
+#    prefer-ip-address: true
+#    lease-renewal-interval-in-seconds: 10
+#    lease-expiration-duration-in-seconds: 20
+#  client:
+#    serviceUrl:
+#      defaultZone: http://10.5.0.5:8761/eureka
 
 #department:
 #  service:
