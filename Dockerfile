@@ -1,5 +1,6 @@
 #cmd : docker build -t filemanager-service .
-FROM openjdk:8
+FROM eclipse-temurin:8-jdk-alpine
 EXPOSE 9003
-ADD target/filemanager-service.jar filemanager-service.jar
+VOLUME /tmp
+COPY target/*.jar filemanager-service.jar
 ENTRYPOINT ["java","-jar","/filemanager-service.jar"]
