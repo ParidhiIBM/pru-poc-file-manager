@@ -23,10 +23,23 @@ public class FileDeleteController {
 	}
 
 	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
-	@DeleteMapping("/files/delete/{id}")
-	public ResponseEntity<String> removeOne(@PathVariable("id") String id) {
+	@DeleteMapping("/files/reviewer/delete/{id}")
+	public ResponseEntity<String> removeFileForAssociate(@PathVariable("id") String id) {
 		try {
-			fileService.remove(id);
+			fileService.removeFromReviewerRepo(id);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(String.format("File deleted successfully."));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(String.format("Could not delete the file."));
+		}
+	}
+	
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
+	@DeleteMapping("/files/employee/delete/{id}")
+	public ResponseEntity<String> removeFile(@PathVariable("id") String id) {
+		try {
+			fileService.removeFromAssociateRepo(id);
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(String.format("File deleted successfully."));
 		} catch (Exception e) {

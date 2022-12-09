@@ -28,7 +28,7 @@ public class DocumentTypeController {
 	@Value("${skill.service.url}")
 	private String skillServiceUrl;
 	
-	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
 	@GetMapping
 	public List<DocumentTypeResponse> getAllDocumentTypesForAssociates() {
 		List<DocumentTypeEntity> documentTypeEntities = new ArrayList<>();
