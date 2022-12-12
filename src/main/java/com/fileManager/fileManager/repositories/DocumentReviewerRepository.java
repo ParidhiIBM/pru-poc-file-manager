@@ -27,4 +27,8 @@ public interface DocumentReviewerRepository extends JpaRepository<DocumentReview
 	@Query("update DocumentReviewer d set d.isReviewed = ?1 where d.reviewerId = ?2 AND d.employeeId = ?3")
 	public void updateDocumentReviewerByReviewerIdAndEmployeeId(boolean isReviewed, String reviewerId, final String employeeId);
 	
+	@Modifying
+	@Query("update DocumentReviewer d set d.isReviewed = ?1, d.reviewerId = ?2 where d.employeeId = ?3")
+	public void updateDocumentReviewerForEmployee(boolean isReviewed, String reviewerId, final String employeeId);
+	
 }

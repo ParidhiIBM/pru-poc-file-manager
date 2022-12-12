@@ -133,6 +133,14 @@ public class FileService {
 				.map(this::mapToFileResponse).collect(Collectors.toList());
     }
     
+    @Transactional
+    public List<ResponseFile> getAllReviewedFilesForEmployee(String employeeId) {
+        return reviewerRepository.findAllByEmployeeId(employeeId).stream()
+				.sorted(Comparator.comparing(FileEntity::getDocumentType)
+						.thenComparing(Comparator.comparing(FileEntity::getName)))
+				.map(this::mapToFileResponse).collect(Collectors.toList());
+    }
+    
     public List<ResponseFile> getAllFiles() {
         return assoRepository.findAll().stream().sorted(Comparator.comparing(FileEntity::getName))
 				.map(this::mapToFileResponse).collect(Collectors.toList());
@@ -161,10 +169,18 @@ public class FileService {
 	public void remove(String id) {
 		fileRepository.deleteById(id);
 	}
+	
+	public void removeFromAssociateRepo(String id) {
+		assoRepository.deleteById(id);
+	}
+	
+	public void removeFromReviewerRepo(String id) {
+		reviewerRepository.deleteById(id);
+	}
     
     @Transactional
     public void updatedReviewedStatus(String reviewerId, String employeeId) {
-		reviewerRepository.updateDocumentReviewerByReviewerIdAndEmployeeId(true, reviewerId, employeeId);
+		reviewerRepository.updateDocumentReviewerForEmployee(true, reviewerId, employeeId);
 	}
     
 	@Transactional
