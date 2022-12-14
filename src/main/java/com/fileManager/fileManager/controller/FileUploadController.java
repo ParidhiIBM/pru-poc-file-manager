@@ -35,7 +35,7 @@ public class FileUploadController {
 	@Autowired
 	private FileService fileService;
 	
-	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
 	@PostMapping()
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("data") String data) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
@@ -57,13 +57,13 @@ public class FileUploadController {
 		return fileService.getAllFiles();
 	}
 
-	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
 	@GetMapping("/sampledoc")
 	public List<ResponseFile> getSampleDocuments() {
 		return fileService.getAllSampleFiles();
 	}
 
-	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
 	@GetMapping("/employee/{employeeId}")
 	public List<ResponseFile> listByEmployeeId(@PathVariable("employeeId") String employeeId) {
 		return fileService.getAllFilesByEmpId(employeeId);
@@ -72,7 +72,7 @@ public class FileUploadController {
 	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
 	@GetMapping("/reviewer/{reviewerId}/employee/{employeeId}")
 	public List<ResponseFile> listByReviewerIdAndEmployeeId(@PathVariable("reviewerId") String reviewerId, @PathVariable("employeeId") String employeeId) {
-		return fileService.getAllFilesByReviewerAndEmployee(reviewerId, employeeId);
+		return fileService.getAllReviewedFilesForEmployee(employeeId);
 	}
 	
 	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
@@ -81,7 +81,7 @@ public class FileUploadController {
 		fileService.updatedReviewedStatus(reviewerId, employeeId);
 	}
 	
-	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
 	@GetMapping("{id}")
 	public ResponseEntity<byte[]> getFile(@PathVariable String id) {
 		Optional<FileEntity> fileEntityOptional = fileService.getFile(id);

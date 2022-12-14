@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -65,7 +66,7 @@ public class FileService {
     	
     	DocumentAssociate fileEntity = null;
     	if(request.getDocument_type().equals("0")) {
-    		fileEntity = getIfExistInAssociateTable(StringUtils.cleanPath(file.getOriginalFilename()), request.getEmployeeId(), request.getDocument_type()); 
+    		fileEntity = getIfSampleExistInAssociateTable(StringUtils.cleanPath(file.getOriginalFilename()), request.getDocument_type()); 
     	} else {
     		fileEntity = getIfExistInAssociateTable(request.getEmployeeId(), request.getDocument_type());
     	}
@@ -133,6 +134,14 @@ public class FileService {
 				.map(this::mapToFileResponse).collect(Collectors.toList());
     }
     
+    @Transactional
+    public List<ResponseFile> getAllReviewedFilesForEmployee(String employeeId) {
+        return reviewerRepository.findAllByEmployeeId(employeeId).stream()
+				.sorted(Comparator.comparing(FileEntity::getDocumentType)
+						.thenComparing(Comparator.comparing(FileEntity::getName)))
+				.map(this::mapToFileResponse).collect(Collectors.toList());
+    }
+    
     public List<ResponseFile> getAllFiles() {
         return assoRepository.findAll().stream().sorted(Comparator.comparing(FileEntity::getName))
 				.map(this::mapToFileResponse).collect(Collectors.toList());
@@ -161,10 +170,18 @@ public class FileService {
 	public void remove(String id) {
 		fileRepository.deleteById(id);
 	}
+	
+	public void removeFromAssociateRepo(String id) {
+		assoRepository.deleteById(id);
+	}
+	
+	public void removeFromReviewerRepo(String id) {
+		reviewerRepository.deleteById(id);
+	}
     
     @Transactional
     public void updatedReviewedStatus(String reviewerId, String employeeId) {
-		reviewerRepository.updateDocumentReviewerByReviewerIdAndEmployeeId(true, reviewerId, employeeId);
+		reviewerRepository.updateDocumentReviewerForEmployee(true, reviewerId, employeeId);
 	}
     
 	@Transactional
@@ -183,6 +200,21 @@ public class FileService {
     	Optional<DocumentAssociate> favorites = assoRepository.findAllByNameAndEmployeeIdAndDocumentType(fileName, employeeId, documentType).stream().findAny();
 		if(favorites.isPresent()) {
 			return favorites.get();
+		}
+		return null;
+	}
+    
+    @Transactional
+    private DocumentAssociate getIfSampleExistInAssociateTable(String fileName, String documentTypeId) {
+    	DocumentTypeEntity documentType = new DocumentTypeEntity();
+    	documentType.setId(Integer.parseInt(documentTypeId));
+    	List<DocumentAssociate> documents = assoRepository.findAllByDocumentType(documentType).stream().collect(Collectors.toList());
+		if(!CollectionUtils.isEmpty(documents)) {
+			Optional<DocumentAssociate> optional = documents.stream().filter(obj->obj.getName().contains(fileName.subSequence(0, fileName.lastIndexOf(".")))).findAny();
+			if(optional.isPresent()) {
+				return optional.get();
+			}
+			return null;
 		}
 		return null;
 	}
