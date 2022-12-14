@@ -81,7 +81,7 @@ public class FileUploadController {
 		fileService.updatedReviewedStatus(reviewerId, employeeId);
 	}
 	
-	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER'})")
+	@PreAuthorize("hasAnyRole({'ROLE_ONBOARDING_REVIEWER','ROLE_ONBOARDING_MANAGER','ROLE_ASSOCIATE'})")
 	@GetMapping("{id}")
 	public ResponseEntity<byte[]> getFile(@PathVariable String id) {
 		Optional<FileEntity> fileEntityOptional = fileService.getFile(id);
